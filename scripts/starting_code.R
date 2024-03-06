@@ -6,9 +6,19 @@ purchases <- read.csv('data_orig/supermarket_purchases.csv', sep = ' ')
 distances <- read.csv('data_orig/supermarket_distances.csv', sep = ' ')
 prices <- read.csv('data_orig/supermarket_prices.csv', sep = ' ')
 
+purchases <- merge(purchases, prices, by = "product_id", all.x = TRUE)
+
 cusprod <- purchases %>% filter(shop_id == 1) %>%  select(customer_id, product_id)
 cusprod$customer_id <- paste("C", cusprod$customer_id, sep = "")
-cusprod$product_id <- paste("V", cusprod$product_id, sep = "")
+cusprod$product_id <- paste("P", cusprod$product_id, sep = "")
+
+distances$customer_id <- paste("C", distances$customer_id, sep = "")
+distances$shop_id <- paste("S", distances$shop_id, sep = "")
+
+purchases$customer_id <- paste("C", purchases$customer_id, sep = "")
+purchases$product_id <- paste("P", purchases$product_id, sep = "")
+purchases$shop_id <- paste("S", purchases$shop_id, sep = "")
+
 cusprod_matrix <- as.matrix(cusprod)
 cusprod_net <- graph_from_edgelist(cusprod_matrix)
 
