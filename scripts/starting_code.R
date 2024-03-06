@@ -19,6 +19,8 @@ purchases$customer_id <- paste("C", purchases$customer_id, sep = "")
 purchases$product_id <- paste("P", purchases$product_id, sep = "")
 purchases$shop_id <- paste("S", purchases$shop_id, sep = "")
 
+purchases <- merge(purchases, distances, by = c("customer_id", "shop_id"), all.x = TRUE)
+
 cusprod_matrix <- as.matrix(cusprod)
 cusprod_net <- graph_from_edgelist(cusprod_matrix)
 
