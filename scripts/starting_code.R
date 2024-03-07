@@ -37,3 +37,18 @@ cusprod_net <- graph_from_edgelist(cusprod_matrix)
 
 
 #Node attributes ----
+
+# H1: the closer the shop is located to the customer, the more products they tend to buy there
+# create categories of shops: the closest, second closest, ... the farthest
+# create boxplot: x-axis: categories of shops, y-axis: average number of products bought by customers
+# 
+# H2: the same with prices (the closer the shop, the more the customer spends there
+# 
+# products bought by most customers
+# products bought most by quantity
+# 
+# average number of products bought by customers
+# 
+# 
+# ?? should we use all 24 mln observations?? or just take a sample?
+# ?? the structure
