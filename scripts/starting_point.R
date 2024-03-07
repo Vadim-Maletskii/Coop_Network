@@ -36,6 +36,11 @@ cusprod_net <- graph_from_edgelist(cusprod_matrix)
 #
 # H4: Average amount of money spent may vary significantly from shop to shop (may be because 
 # of geoposition of shops, but we don't have data to check it)
+
+# projection: clusters of customers buying the same products in the same shop
+# santo fortunato: community detection in graphs
+# igraph: bipartite_...
 #
-# ?? should we use all 24 mln observations?? or just take a sample?
-# ?? the structure
+# ?? should we use all 24 mln observations?? or just take a sample? TAKE A SAMPLE OF CUSTOMERS, ALSO LOOK AT THE NUMBER OF PRODUCTS
+# the usual structure of the paper
+# send the code

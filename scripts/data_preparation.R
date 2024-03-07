@@ -16,5 +16,4 @@ distances$customer_id <- paste("C", distances$customer_id, sep = "")
 distances$shop_id <- paste("S", distances$shop_id, sep = "")
 
 purchases <- merge(purchases, distances, by = c("customer_id", "shop_id"), all.x = TRUE)
-
-
+# rio::export(purchases, 'whole_df.csv', format = 'csv')
