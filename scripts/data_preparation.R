@@ -29,5 +29,5 @@ sampled_df <- whole_df %>%
 dim(sampled_df)
 length(unique(sampled_df$customer_id))
 
-rio::export(sampled_df, 'data_preproc/sampled_df.csv', format = 'csv')
+# rio::export(sampled_df, 'data_preproc/sampled_df.csv', format = 'csv')
  
