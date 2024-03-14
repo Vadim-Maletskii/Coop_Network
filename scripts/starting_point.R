@@ -1,6 +1,6 @@
-purchases <- read.csv('data_preproc/whole_df.csv', sep = ',')
+sample_df <- read.csv('data_preproc/whole_df.csv', sep = ',')
 
-cusprod <- purchases %>% select(customer_id, product_id)
+cusprod <- sample_df %>% select(customer_id, product_id)
 cusprod_matrix <- as.matrix(cusprod)
 cusprod_net <- graph_from_edgelist(cusprod_matrix)
 
