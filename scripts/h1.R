@@ -18,7 +18,7 @@ table(customer_shop_count$num_shops) # most people (24362) made purchases in two
 sampled_customers <- customers_with_five_shops %>%
   sample_n(5000)
 
-# Whole df ----
+# Whole df H1, H2 ----
 whole_df <- whole_df %>%
   group_by(customer_id) %>%
   mutate(shop_category = factor(dense_rank(distance)))
@@ -77,7 +77,7 @@ distances <- distances %>%
 
 
 
-# H2 sampled df:
+# H2 sampled df NOT FINISHED 
 sampled_df %>% group_by(customer_id, shop_category) %>% summarize(sum_spent = sum(quantity * price)) %>% mutate(percent = sum_spent / sum(sum_spent) * 100)
 sum_spent_grouped <- sampled_df %>%
   group_by(customer_id, shop_category) %>%
@@ -85,3 +85,44 @@ sum_spent_grouped <- sampled_df %>%
   mutate(percentage = (sum_products / sum(sum_products)) * 100)
 sum_p_grouped %>% group_by(shop_category) %>% summarize(avg_percent = mean(percentage))
      
+
+# Products bought by most customers ----
+
+# Overall
+products_bought_overall <- whole_df %>% group_by(product_id) %>% summarize(distinct_customers = n_distinct(customer_id)) %>% arrange(desc(distinct_customers))
+products_bought_overall$percentage <- round((products_bought_overall$distinct_customers / 60365 * 100), 2) # 60365 is the number of distinct customers
+
+# S1
+products_bought_s1 <- whole_df %>% filter(shop_id == 'S1')
+distinct_customers_s1 <- n_distinct(products_bought_s1$customer_id)
+products_bought_s1 <- products_bought_s1 %>% group_by(product_id) %>% summarize(distinct_customers = n_distinct(customer_id)) %>% arrange(desc(distinct_customers))
+products_bought_s1$percentage <- round((products_bought_s1$distinct_customers / distinct_customers_s1 * 100), 2)
+
+# S2
+products_bought_s2 <- whole_df %>% filter(shop_id == 'S2')
+distinct_customers_s2 <- n_distinct(products_bought_s2$customer_id)
+products_bought_s2 <- products_bought_s2 %>% group_by(product_id) %>% summarize(distinct_customers = n_distinct(customer_id)) %>% arrange(desc(distinct_customers))
+products_bought_s2$percentage <- round((products_bought_s2$distinct_customers / distinct_customers_s2 * 100), 2)
+
+# S3
+products_bought_s3 <- whole_df %>% filter(shop_id == 'S3')
+distinct_customers_s3 <- n_distinct(products_bought_s3$customer_id)
+products_bought_s3 <- products_bought_s3 %>% group_by(product_id) %>% summarize(distinct_customers = n_distinct(customer_id)) %>% arrange(desc(distinct_customers))
+products_bought_s3$percentage <- round((products_bought_s3$distinct_customers / distinct_customers_s3 * 100), 2)
+
+# S4
+products_bought_s4 <- whole_df %>% filter(shop_id == 'S4')
+distinct_customers_s4 <- n_distinct(products_bought_s4$customer_id)
+products_bought_s4 <- products_bought_s4 %>% group_by(product_id) %>% summarize(distinct_customers = n_distinct(customer_id)) %>% arrange(desc(distinct_customers))
+products_bought_s4$percentage <- round((products_bought_s4$distinct_customers / distinct_customers_s4 * 100), 2)
+
+# S5
+products_bought_s5 <- whole_df %>% filter(shop_id == 'S5')
+distinct_customers_s5 <- n_distinct(products_bought_s5$customer_id)
+products_bought_s5 <- products_bought_s5 %>% group_by(product_id) %>% summarize(distinct_customers = n_distinct(customer_id)) %>% arrange(desc(distinct_customers))
+products_bought_s5$percentage <- round((products_bought_s5$distinct_customers / distinct_customers_s5 * 100), 2)
+
+table(distances$shop_id, distances$shop_category) # how much shops are close to people in general
+
+# the percentage of distinct customers (and distinct products bought) is the highest for the shop S1, next is S2, next is S3, next is S5, next is S4
+# it is like this even though S1 is not closest to most people, it is in category 4. the closest one is S3, then S5, then S2, then S1, then S4
