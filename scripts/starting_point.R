@@ -30,13 +30,12 @@ cusprod_net <- graph_from_edgelist(cusprod_matrix)
 # products bought by most customers (also the same in each particular shop)
 # products bought most by quantity
 # 
-# average number of products bought by customers
-# 
+# H3:  Нетворк по магазам с трешхолдом по опредленному кол-ву одинаково купленных товаров
+# (с кластерами по товарам), даже если кластеров нет, можно посмотреть на разницу между магазами
+#
+# ??H4: нетворк для каждого магаза с дистанцией как длинна еджа??
 # Which shops made the most in total
 #
-# H4: Average amount of money spent may vary significantly from shop to shop (may be because 
-# of geoposition of shops, but we don't have data to check it)
-
 # projection: clusters of customers buying the same products in the same shop
 # santo fortunato: community detection in graphs
 # igraph: bipartite_...
