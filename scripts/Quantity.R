@@ -41,11 +41,11 @@ shop_id_S4 <- distinct (shop_id_S4)
 shop_id_S5 <- distinct (shop_id_S5)
 
 set.seed(793)
-shop_id_S1 <- shop_id_S1[sample(nrow(shop_id_S4), 250), ]
-shop_id_S2 <- shop_id_S2[sample(nrow(shop_id_S4), 250), ]
-shop_id_S3 <- shop_id_S3[sample(nrow(shop_id_S4), 250), ]
+shop_id_S1 <- shop_id_S1[sample(nrow(shop_id_S1), 250), ]
+shop_id_S2 <- shop_id_S2[sample(nrow(shop_id_S2), 250), ]
+shop_id_S3 <- shop_id_S3[sample(nrow(shop_id_S3), 250), ]
 shop_id_S4 <- shop_id_S4[sample(nrow(shop_id_S4), 250), ]
-shop_id_S5 <- shop_id_S5[sample(nrow(shop_id_S4), 250), ]
+shop_id_S5 <- shop_id_S5[sample(nrow(shop_id_S5), 250), ]
 
 category_colors = c("red", "blue", "green","orange","purple")
 
