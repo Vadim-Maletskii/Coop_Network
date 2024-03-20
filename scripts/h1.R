@@ -198,15 +198,55 @@ ggplot(top_10_s5, aes(x = reorder(product_id, -percentage), y = percentage)) +
        y = "Percentage") +
   theme(axis.text.x = element_text(hjust = 1))
 
+distances <- distances %>%
+  group_by(customer_id) %>%
+  mutate(shop_category = factor(dense_rank(distance)))
+
+distances_with_purchase <- distances %>%
+  left_join(whole_df %>%
+              distinct(customer_id, shop_id) %>%
+              mutate(purchase = TRUE),
+            by = c("customer_id", "shop_id")) %>%
+  mutate(purchase = ifelse(is.na(purchase), FALSE, TRUE))
+filtered_distances <- distances_with_purchase[distances_with_purchase$purchase == TRUE, ]
 table(distances$shop_id, distances$shop_category) # how much shops are close to people in general
+filtered_distances %>% group_by(shop_id) %>% summarize(mean_distance = median(distance))
+
+customer_purchase_counts <- distances_with_purchase %>%
+  group_by(customer_id) %>%
+  summarise(num_true = sum(purchase))
+
+# Filter customers with exactly 5 TRUE values
+customers_with_5_true <- customer_purchase_counts %>%
+  filter(num_true == 5)
+
+# Filter distances_with_purchase to keep only rows for customers with 5 TRUE values
+filtered_distances <- distances_with_purchase %>%
+  filter(customer_id %in% customers_with_5_true$customer_id)
 
 # the percentage of distinct customers (and distinct products bought) is the highest for the shop S1, next is S2, next is S3, next is S5, next is S4
 # it is like this even though S1 is not closest to most people, it is in category 4. the closest one is S3, then S5, then S2, then S1, then S4
+selected_customer_ids <- unique(filtered_distances$customer_id)
 
+# Filter whole_df to keep only rows with customer_ids present in selected_customer_ids
+filtered_whole_df <- whole_df %>%
+  filter(customer_id %in% selected_customer_ids)
 
-whole_df %>% group_by(shop_category) %>% summarize(dist_products = n()) %>% mutate(percent = dist_products / sum(dist_products) * 100)
-sum_quantity_grouped_whole <- whole_df %>%
+filtered_whole_df %>% group_by(shop_category) %>% summarize(dist_products = n()) %>% mutate(percent = dist_products / sum(dist_products) * 100)
+mean_distances <- filtered_whole_df %>% group_by(shop_category) %>% summarize(mean_distance = mean(distance))
+sum_quantity_grouped_whole <- filtered_whole_df %>%
   group_by(customer_id, shop_category) %>%
   summarize(sum_products = sum(quantity)) %>%
   mutate(percentage = (sum_products / sum(sum_products)) * 100)
 quantity_percent_in_shops <- sum_quantity_grouped_whole %>% group_by(shop_category) %>% summarize(avg_percent = round(mean(percentage), 2))
+quantity_percent_in_shops <- merge(quantity_percent_in_shops, mean_distances)
+quantity_percent_in_shops$mean_distance <- round(quantity_percent_in_shops$mean_distance)
+pie_chart_percent_in_shops <- ggplot(quantity_percent_in_shops, aes(x = "", y = avg_percent, fill = shop_category)) +
+  geom_bar(stat = "identity", width = 1) +
+  geom_text(aes(label = paste0(avg_percent, "%")), position = position_stack(vjust = 0.5)) +  # Add text labels for avg_percent
+  coord_polar("y", start = 0) +  # Convert bar plot to pie chart
+  labs(title = "Distribution of Items (%) Bought by Customer in Each Shop") +
+  theme_void() +  # Remove unnecessary elements
+  theme(legend.position = "right", plot.title = element_text(hjust = 0.5)) +  # Adjust legend position if needed
+  scale_fill_brewer()
+
