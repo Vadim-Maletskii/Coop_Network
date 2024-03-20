@@ -1,6 +1,14 @@
-# S1 ----
+library(tidyverse)
+library(dplyr)
+library(igraph)
+library(ggraph)
+
 whole_df <- read.csv('data_preproc/whole_df.csv', sep = ',')
+
+# S1 ----
+
 s1 <- whole_df %>% filter(shop_id == 'S1')
+
 set.seed(793)
 sampled_customers1 <- s1 %>%
   distinct(customer_id) %>% sample_n(100)
@@ -9,7 +17,7 @@ sampled_s1 <- s1 %>%
 
 customer_products1 <- aggregate(product_id ~ customer_id, sampled_s1, function(x) unique(x))
 
-new_df <- customer_products1 %>%
+clust_s1 <- customer_products1 %>%
   separate_rows(product_id, sep = ",") %>%
   group_by(customer_id) %>%
   mutate(cluster = rep(1:ceiling(n()/100), each = 100, length.out = n())) %>%
@@ -20,10 +28,10 @@ new_df <- customer_products1 %>%
   arrange(customer_id)  # Optional: arrange by customer_id for better readability
 
 # View the new dataframe
-print(new_df)
+print(clust_s1)
 
-unique_customers <- unique(new_df $customer_id)
-unique_categories <- unique(new_df $cluster)
+unique_customers <- unique(clust_s1 $customer_id)
+unique_categories <- unique(clust_s1 $cluster)
 
 # Create an empty adjacency matrix with dimension names
 adj_matrix <- matrix(0, nrow = length(unique_customers), 
@@ -31,13 +39,13 @@ adj_matrix <- matrix(0, nrow = length(unique_customers),
                      dimnames = list(unique_customers, unique_customers))
 
 # Loop through the dataframe to update adjacency matrix
-for (i in 1:nrow(new_df )) {
-  customer1 <- new_df $customer_id[i]
-  category <- new_df $cluster[i]
+for (i in 1:nrow(clust_s1 )) {
+  customer1 <- clust_s1 $customer_id[i]
+  category <- clust_s1 $cluster[i]
   
   # Find other customers with the same category
-  other_customers <- new_df $customer_id[new_df $cluster == category & 
-                                               new_df $customer_id != customer1]
+  other_customers <- clust_s1 $customer_id[clust_s1 $cluster == category & 
+                                               clust_s1 $customer_id != customer1]
   
   # Update adjacency matrix for each pair of customers with the same category
   adj_matrix[customer1, other_customers] <- 1
@@ -47,9 +55,7 @@ for (i in 1:nrow(new_df )) {
 g <- graph_from_adjacency_matrix(adj_matrix, mode = "undirected", weighted = TRUE)
 
 # Set diversity as node sizes
-V(g)$colour <- as.factor (new_df$cluster)
-E(g)$length <- 2
-
+V(g)$colour <- as.factor (clust_s1$cluster)
 
 # Plot with manual colors
 ggraph(g, layout = "fr") +
@@ -58,8 +64,235 @@ ggraph(g, layout = "fr") +
   theme_void()+
   guides(color = none) 
 
+# S2 ----
+s2 <- whole_df %>% filter(shop_id == 'S2')
+set.seed(793)
+sampled_customers2 <- s2 %>%
+  distinct(customer_id) %>% sample_n(100)
+sampled_s2 <- s2 %>%
+  filter(customer_id %in% sampled_customers2$customer_id)
 
+customer_products2 <- aggregate(product_id ~ customer_id, sampled_s2, function(x) unique(x))
 
+clust_s2 <- customer_products2 %>%
+  separate_rows(product_id, sep = ",") %>%
+  group_by(customer_id) %>%
+  mutate(cluster = rep(1:ceiling(n()/100), each = 100, length.out = n())) %>%
+  ungroup() %>%
+  select(customer_id, cluster) %>%
+  distinct() %>%
+  mutate(customer_id = paste0(customer_id, "_", cluster)) %>%
+  arrange(customer_id)  # Optional: arrange by customer_id for better readability
+
+# View the new dataframe
+print(clust_s2)
+
+unique_customers <- unique(clust_s2 $customer_id)
+unique_categories <- unique(clust_s2 $cluster)
+
+# Create an empty adjacency matrix with dimension names
+adj_matrix <- matrix(0, nrow = length(unique_customers), 
+                     ncol = length(unique_customers),
+                     dimnames = list(unique_customers, unique_customers))
+
+# Loop through the dataframe to update adjacency matrix
+for (i in 1:nrow(clust_s2 )) {
+  customer1 <- clust_s2 $customer_id[i]
+  category <- clust_s2 $cluster[i]
+  
+  # Find other customers with the same category
+  other_customers <- clust_s2 $customer_id[clust_s2 $cluster == category & 
+                                             clust_s2 $customer_id != customer1]
+  
+  # Update adjacency matrix for each pair of customers with the same category
+  adj_matrix[customer1, other_customers] <- 1
+}
+
+# Convert adjacency matrix to igraph object
+g <- graph_from_adjacency_matrix(adj_matrix, mode = "undirected", weighted = TRUE)
+
+# Set diversity as node sizes
+V(g)$colour <- as.factor (clust_s2$cluster)
+
+# Plot with manual colors
+ggraph(g, layout = "fr") +
+  geom_edge_link(color = "white") +
+  geom_node_point(alpha = 0.5, size = 0.5) +
+  theme_void()+
+  guides(color = none) 
+
+# S3---- 
+s3 <- whole_df %>% filter(shop_id == 'S3')
+set.seed(793)
+sampled_customers3 <- s3 %>%
+  distinct(customer_id) %>% sample_n(100)
+sampled_s3 <- s3 %>%
+  filter(customer_id %in% sampled_customers3$customer_id)
+
+customer_products3 <- aggregate(product_id ~ customer_id, sampled_s3, function(x) unique(x))
+
+clust_s3 <- customer_products3 %>%
+  separate_rows(product_id, sep = ",") %>%
+  group_by(customer_id) %>%
+  mutate(cluster = rep(1:ceiling(n()/100), each = 100, length.out = n())) %>%
+  ungroup() %>%
+  select(customer_id, cluster) %>%
+  distinct() %>%
+  mutate(customer_id = paste0(customer_id, "_", cluster)) %>%
+  arrange(customer_id)  # Optional: arrange by customer_id for better readability
+
+# View the new dataframe
+print(clust_s3)
+
+unique_customers <- unique(clust_s3 $customer_id)
+unique_categories <- unique(clust_s3 $cluster)
+
+# Create an empty adjacency matrix with dimension names
+adj_matrix <- matrix(0, nrow = length(unique_customers), 
+                     ncol = length(unique_customers),
+                     dimnames = list(unique_customers, unique_customers))
+
+# Loop through the dataframe to update adjacency matrix
+for (i in 1:nrow(clust_s3 )) {
+  customer1 <- clust_s3 $customer_id[i]
+  category <- clust_s3 $cluster[i]
+  
+  # Find other customers with the same category
+  other_customers <- clust_s3 $customer_id[clust_s3 $cluster == category & 
+                                             clust_s3 $customer_id != customer1]
+  
+  # Update adjacency matrix for each pair of customers with the same category
+  adj_matrix[customer1, other_customers] <- 1
+}
+
+# Convert adjacency matrix to igraph object
+g <- graph_from_adjacency_matrix(adj_matrix, mode = "undirected", weighted = TRUE)
+
+# Set diversity as node sizes
+V(g)$colour <- as.factor (clust_s3$cluster)
+
+# Plot with manual colors
+ggraph(g, layout = "fr") +
+  geom_edge_link(color = "white") +
+  geom_node_point(alpha = 0.5, size = 0.5) +
+  theme_void()
+
+# S4 ----
+
+s4 <- whole_df %>% filter(shop_id == 'S4')
+set.seed(793)
+sampled_customers4 <- s4 %>%
+  distinct(customer_id) %>% sample_n(100)
+sampled_s4 <- s4 %>%
+  filter(customer_id %in% sampled_customers4$customer_id)
+
+customer_products4 <- aggregate(product_id ~ customer_id, sampled_s4, function(x) unique(x))
+
+clust_s4 <- customer_products4 %>%
+  separate_rows(product_id, sep = ",") %>%
+  group_by(customer_id) %>%
+  mutate(cluster = rep(1:ceiling(n()/100), each = 100, length.out = n())) %>%
+  ungroup() %>%
+  select(customer_id, cluster) %>%
+  distinct() %>%
+  mutate(customer_id = paste0(customer_id, "_", cluster)) %>%
+  arrange(customer_id)  # Optional: arrange by customer_id for better readability
+
+# View the new dataframe
+print(clust_s4)
+
+unique_customers <- unique(clust_s4 $customer_id)
+unique_categories <- unique(clust_s4 $cluster)
+
+# Create an empty adjacency matrix with dimension names
+adj_matrix <- matrix(0, nrow = length(unique_customers), 
+                     ncol = length(unique_customers),
+                     dimnames = list(unique_customers, unique_customers))
+
+# Loop through the dataframe to update adjacency matrix
+for (i in 1:nrow(clust_s4 )) {
+  customer1 <- clust_s4 $customer_id[i]
+  category <- clust_s4 $cluster[i]
+  
+  # Find other customers with the same category
+  other_customers <- clust_s4 $customer_id[clust_s4 $cluster == category & 
+                                             clust_s4 $customer_id != customer1]
+  
+  # Update adjacency matrix for each pair of customers with the same category
+  adj_matrix[customer1, other_customers] <- 1
+}
+
+# Convert adjacency matrix to igraph object
+g <- graph_from_adjacency_matrix(adj_matrix, mode = "undirected", weighted = TRUE)
+
+# Set diversity as node sizes
+V(g)$colour <- as.factor (clust_s4$cluster)
+
+# Plot with manual colors
+ggraph(g, layout = "fr") +
+  geom_edge_link(color = "white") +
+  geom_node_point(alpha = 0.5, size = 0.5) +
+  theme_void()+
+  guides(color = none) 
+
+# S5 ----
+s5 <- whole_df %>% filter(shop_id == 'S5')
+set.seed(793)
+sampled_customers5 <- s5 %>%
+  distinct(customer_id) %>% sample_n(100)
+sampled_s5 <- s5 %>%
+  filter(customer_id %in% sampled_customers5$customer_id)
+
+customer_products5 <- aggregate(product_id ~ customer_id, sampled_s5, function(x) unique(x))
+
+clust_s5 <- customer_products5 %>%
+  separate_rows(product_id, sep = ",") %>%
+  group_by(customer_id) %>%
+  mutate(cluster = rep(1:ceiling(n()/100), each = 100, length.out = n())) %>%
+  ungroup() %>%
+  select(customer_id, cluster) %>%
+  distinct() %>%
+  mutate(customer_id = paste0(customer_id, "_", cluster)) %>%
+  arrange(customer_id)  # Optional: arrange by customer_id for better readability
+
+# View the new dataframe
+print(clust_s5)
+
+unique_customers <- unique(clust_s5 $customer_id)
+unique_categories <- unique(clust_s5 $cluster)
+
+# Create an empty adjacency matrix with dimension names
+adj_matrix <- matrix(0, nrow = length(unique_customers), 
+                     ncol = length(unique_customers),
+                     dimnames = list(unique_customers, unique_customers))
+
+# Loop through the dataframe to update adjacency matrix
+for (i in 1:nrow(clust_s5 )) {
+  customer1 <- clust_s5 $customer_id[i]
+  category <- clust_s5 $cluster[i]
+  
+  # Find other customers with the same category
+  other_customers <- clust_s5 $customer_id[clust_s5 $cluster == category & 
+                                             clust_s5 $customer_id != customer1]
+  
+  # Update adjacency matrix for each pair of customers with the same category
+  adj_matrix[customer1, other_customers] <- 1
+}
+
+# Convert adjacency matrix to igraph object
+g <- graph_from_adjacency_matrix(adj_matrix, mode = "undirected", weighted = TRUE)
+
+# Set diversity as node sizes
+V(g)$colour <- as.factor (clust_s5$cluster)
+
+# Plot with manual colors
+ggraph(g, layout = "fr") +
+  geom_edge_link(color = "white") +
+  geom_node_point(alpha = 0.5, size = 0.5) +
+  theme_void()+
+  guides(color = none) 
+
+#----
 
 find_common_products <- function(products1, products2) {
   common <- intersect(unlist(products1), unlist(products2))
