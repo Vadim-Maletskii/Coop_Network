@@ -57,12 +57,34 @@ g <- graph_from_adjacency_matrix(adj_matrix, mode = "undirected", weighted = TRU
 # Set diversity as node sizes
 V(g)$colour <- as.factor (clust_s1$cluster)
 
+c25 <- c(
+  "dodgerblue2", "#E31A1C", # red
+  "green4",
+  "#6A3D9A", # purple
+  "#FF7F00", # orange
+  "black", "gold1",
+  "skyblue2", "#FB9A99", # lt pink
+  "palegreen2",
+  "#CAB2D6", # lt purple
+  "#FDBF6F", # lt orange
+  "gray70", "khaki2",
+  "maroon", "orchid1", "deeppink1", "blue1", "steelblue4",
+  "darkturquoise", "green1", "yellow4", "yellow3",
+  "darkorange4", "brown"
+)
+
+palette <- c25[1:num_clusters]
+
+# Define colors for each cluster using the selected palette
+cluster_colors <- palette[1:num_clusters]
+
 # Plot with manual colors
 ggraph(g, layout = "fr") +
   geom_edge_link(color = "white") +
-  geom_node_point(alpha = 0.5, size = 0.5) +
-  theme_void()+
-  guides(color = none) 
+  geom_node_point(aes(color = as.factor(clust_s1$cluster)), alpha = 0.8, size = 0.5) +  # Assigning colors based on cluster
+  scale_color_manual(values = cluster_colors) +  # Applying defined colors
+  theme_void() +
+  guides(color = "none")
 
 # S2 ----
 s2 <- whole_df %>% filter(shop_id == 'S2')
