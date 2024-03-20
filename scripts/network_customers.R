@@ -1,5 +1,5 @@
 # S1 ----
-
+whole_df <- read.csv('data_preproc/whole_df.csv', sep = ',')
 s1 <- whole_df %>% filter(shop_id == 'S1')
 set.seed(793)
 sampled_customers1 <- s1 %>%
@@ -8,6 +8,59 @@ sampled_s1 <- s1 %>%
   filter(customer_id %in% sampled_customers1$customer_id)
 
 customer_products1 <- aggregate(product_id ~ customer_id, sampled_s1, function(x) unique(x))
+
+new_df <- customer_products1 %>%
+  separate_rows(product_id, sep = ",") %>%
+  group_by(customer_id) %>%
+  mutate(cluster = rep(1:ceiling(n()/100), each = 100, length.out = n())) %>%
+  ungroup() %>%
+  select(customer_id, cluster) %>%
+  distinct() %>%
+  mutate(customer_id = paste0(customer_id, "_", cluster)) %>%
+  arrange(customer_id)  # Optional: arrange by customer_id for better readability
+
+# View the new dataframe
+print(new_df)
+
+unique_customers <- unique(new_df $customer_id)
+unique_categories <- unique(new_df $cluster)
+
+# Create an empty adjacency matrix with dimension names
+adj_matrix <- matrix(0, nrow = length(unique_customers), 
+                     ncol = length(unique_customers),
+                     dimnames = list(unique_customers, unique_customers))
+
+# Loop through the dataframe to update adjacency matrix
+for (i in 1:nrow(new_df )) {
+  customer1 <- new_df $customer_id[i]
+  category <- new_df $cluster[i]
+  
+  # Find other customers with the same category
+  other_customers <- new_df $customer_id[new_df $cluster == category & 
+                                               new_df $customer_id != customer1]
+  
+  # Update adjacency matrix for each pair of customers with the same category
+  adj_matrix[customer1, other_customers] <- 1
+}
+
+# Convert adjacency matrix to igraph object
+g <- graph_from_adjacency_matrix(adj_matrix, mode = "undirected", weighted = TRUE)
+
+# Set diversity as node sizes
+V(g)$colour <- as.factor (new_df$cluster)
+E(g)$length <- 2
+
+
+# Plot with manual colors
+ggraph(g, layout = "fr") +
+  geom_edge_link(color = "white") +
+  geom_node_point(alpha = 0.5, size = 0.5) +
+  theme_void()+
+  guides(color = none) 
+
+
+
+
 find_common_products <- function(products1, products2) {
   common <- intersect(unlist(products1), unlist(products2))
   return(length(common))
