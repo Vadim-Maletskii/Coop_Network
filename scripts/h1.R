@@ -210,12 +210,102 @@ distances_with_purchase <- distances %>%
   mutate(purchase = ifelse(is.na(purchase), FALSE, TRUE))
 filtered_distances <- distances_with_purchase[distances_with_purchase$purchase == TRUE, ]
 table(distances$shop_id, distances$shop_category) # how much shops are close to people in general
-filtered_distances %>% group_by(shop_id) %>% summarize(mean_distance = median(distance))
+table(filtered_distances$shop_id, filtered_distances$shop_category)
+capture.output(print(filtered_distances %>% group_by(shop_id) %>% summarize(mean_distance = median(distance))))
+
+distances_s1 <- distances %>%
+  filter(shop_id == 'S1') %>%
+  select(distance)
+distances_s1$distance <- round(distances_s1$distance)
+hist(distances_s1$distance)
+median(distances_s1$distance) # 2289
+
+f_distances_s1 <- filtered_distances %>%
+  filter(shop_id == 'S1') %>%
+  select(distance)
+f_distances_s1$distance <- round(f_distances_s1$distance)
+hist(f_distances_s1$distance)
+median(f_distances_s1$distance) # 2279
+
+par(mfrow = c(1, 2))
+hist(distances_s1$distance, xlab = 'Distance to S1', ylab = "", main = 'Distances from All Customers to S1')
+abline(v = median(distances_s1$distance), col = "black", lty = 2, lwd = 2)
+hist(f_distances_s1$distance, xlab = 'Distance to S1', ylab = "", main = "Distances from 'Loyal' Customers to S1")
+abline(v = median(f_distances_s1$distance), col = "black", lty = 2, lwd = 2)
+par(mfrow = c(1, 1))
+
+distances_s2 <- distances %>%
+  filter(shop_id == 'S2') %>%
+  select(distance)
+distances_s2$distance <- round(distances_s2$distance)
+hist(distances_s2$distance)
+median(distances_s2$distance) # 2355
+
+f_distances_s2 <- filtered_distances %>%
+  filter(shop_id == 'S2') %>%
+  select(distance)
+f_distances_s2$distance <- round(f_distances_s2$distance)
+hist(f_distances_s2$distance)
+median(f_distances_s2$distance) # 2082
+
+distances_s3 <- distances %>%
+  filter(shop_id == 'S3') %>%
+  select(distance)
+distances_s3$distance <- round(distances_s3$distance)
+hist(distances_s3$distance)
+median(distances_s3$distance) # 1746
+
+f_distances_s3 <- filtered_distances %>%
+  filter(shop_id == 'S3') %>%
+  select(distance)
+f_distances_s3$distance <- round(f_distances_s3$distance)
+hist(f_distances_s3$distance)
+median(f_distances_s3$distance) # 1418
+
+distances_s4 <- distances %>%
+  filter(shop_id == 'S4') %>%
+  select(distance)
+distances_s4$distance <- round(distances_s4$distance)
+hist(distances_s4$distance, xlab = 'Distance to S4', ylab = "", main = 'Distances from All Customers to S4')
+median(distances_s4$distance) # 2704
+
+f_distances_s4 <- filtered_distances %>%
+  filter(shop_id == 'S4') %>%
+  select(distance)
+f_distances_s4$distance <- round(f_distances_s4$distance)
+hist(f_distances_s4$distance, xlab = 'Distance to S4', ylab = "", main = "Distances from 'Loyal' Customers to S4")
+median(f_distances_s4$distance) # 1162
+
+par(mfrow = c(1, 2))
+hist(distances_s4$distance, xlab = 'Distance to S4', ylab = "", main = 'Distances from All Customers to S4')
+abline(v = median(distances_s4$distance), col = "black", lty = 2, lwd = 2)
+hist(f_distances_s4$distance, xlab = 'Distance to S4', ylab = "", main = "Distances from 'Loyal' Customers to S4")
+abline(v = median(f_distances_s4$distance), col = "black", lty = 2, lwd = 2)
+par(mfrow = c(1, 1))
+
+distances_s5 <- distances %>%
+  filter(shop_id == 'S5') %>%
+  select(distance)
+distances_s5$distance <- round(distances_s5$distance)
+hist(distances_s5$distance)
+median(distances_s5$distance) # 1853
+
+f_distances_s5 <- filtered_distances %>%
+  filter(shop_id == 'S5') %>%
+  select(distance)
+f_distances_s5$distance <- round(f_distances_s5$distance)
+hist(f_distances_s5$distance)
+median(f_distances_s5$distance) # 1077
+
+hist(distances$distance)
+mean(distances$distance)
+median(distances$distance)
 
 customer_purchase_counts <- distances_with_purchase %>%
   group_by(customer_id) %>%
   summarise(num_true = sum(purchase))
 
+summary(distances)
 # Filter customers with exactly 5 TRUE values
 customers_with_5_true <- customer_purchase_counts %>%
   filter(num_true == 5)
