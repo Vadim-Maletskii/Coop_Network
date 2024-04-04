@@ -16,7 +16,7 @@ distances$customer_id <- paste("C", distances$customer_id, sep = "")
 distances$shop_id <- paste("S", distances$shop_id, sep = "")
 
 whole_df <- merge(purchases, distances, by = c("customer_id", "shop_id"), all.x = TRUE)
-# rio::export(whole_df, 'data_preproc/whole_df.csv', format = 'csv')
+rio::export(whole_df, 'data_preproc/whole_df.csv', format = 'csv')
 
 set.seed(793)
 sampled_customers <- whole_df %>%
@@ -29,5 +29,5 @@ sampled_df <- whole_df %>%
 dim(sampled_df)
 length(unique(sampled_df$customer_id))
 
-# rio::export(sampled_df, 'data_preproc/sampled_df.csv', format = 'csv')
+rio::export(sampled_df, 'data_preproc/sampled_df.csv', format = 'csv')
  
