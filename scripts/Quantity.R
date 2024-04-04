@@ -79,14 +79,14 @@ g <- graph_from_adjacency_matrix(adj_matrix, mode = "undirected", weighted = TRU
 V(g)$size <- shop_id_S1 $diversity
 V(g)$colour <- as.factor (shop_id_S1$shop_category)
 
-# Plot with manual colors
+
 gplot = ggraph(g, layout = "fr") +
   geom_edge_link(color = "white") +
   geom_node_point(aes(size = size, colour = colour), alpha = 0.5) +
   scale_size_continuous(range = c(0.1, 5)) + 
   scale_colour_manual(values = category_colors) +
   theme_graph()+
-  theme(legend.text = element_text(size = 10),  # Increase legend text size
+  theme(legend.text = element_text(size = 10),  
         legend.title = element_text(size = 12))+ 
   labs(color = "Shop category", size = "Range of products")
 
@@ -123,14 +123,14 @@ V(g)$size <- shop_id_S2 $diversity
 V(g)$colour <- as.factor (shop_id_S2$shop_category)
 
 
-# Plot with manual colors
+
 gplot =ggraph(g, layout = "fr") +
   geom_edge_link(color = "white") +
   geom_node_point(aes(size = size, colour = colour), alpha = 0.5) +
   scale_size_continuous(range = c(0.1, 5)) + 
   scale_colour_manual(values = category_colors) +
   theme_graph()+
-  theme(legend.text = element_text(size = 10),  # Increase legend text size
+  theme(legend.text = element_text(size = 10),  
         legend.title = element_text(size = 12))+ 
   labs(color = "Shop category", size = "Range of products")
 ggsave("plots/plot2.png", plot = gplot, width = 19.2, height = 9.92, units = "cm", dpi = 300)
@@ -167,14 +167,14 @@ g <- graph_from_adjacency_matrix(adj_matrix, mode = "undirected", weighted = TRU
 V(g)$size <- shop_id_S3 $diversity
 V(g)$colour <- as.factor (shop_id_S3$shop_category)
 
-# Plot with manual colors
+
 gplot = ggraph(g, layout = "fr") +
   geom_edge_link(color = "white") +
   geom_node_point(aes(size = size, colour = colour), alpha = 0.5) +
   scale_size_continuous(range = c(0.1, 5)) + 
   scale_colour_manual(values = category_colors) +
   theme_graph()+
-  theme(legend.text = element_text(size = 10),  # Increase legend text size
+  theme(legend.text = element_text(size = 10),  
         legend.title = element_text(size = 12))+ 
   labs(color = "Shop category", size = "Range of products")
 ggsave("plots/plot3.png", plot = gplot, width = 19.2, height = 9.92, units = "cm", dpi = 300)
@@ -212,14 +212,14 @@ V(g)$size <- shop_id_S4$diversity
 V(g)$colour <- as.factor (shop_id_S4$shop_category)
 
 
-# Plot with manual colors
+
 gplot = gplot = ggraph(g, layout = "fr") +
   geom_edge_link(color = "white") +
   geom_node_point(aes(size = size, colour = colour), alpha = 0.5) +
   scale_size_continuous(range = c(0.1, 5)) + 
   scale_colour_manual(values = category_colors) +
   theme_graph()+
-  theme(legend.text = element_text(size = 10),  # Increase legend text size
+  theme(legend.text = element_text(size = 10),  
         legend.title = element_text(size = 12))+ 
   labs(color = "Shop category", size = "Range of products")
 ggsave("plots/plot4.png", plot = gplot, width = 19.2, height = 9.92, units = "cm", dpi = 300)
@@ -255,14 +255,14 @@ V(g)$size <- shop_id_S5 $diversity
 V(g)$colour <- as.factor (shop_id_S5$shop_category)
 
 
-# Plot with manual colors
+
 gplot = ggraph(g, layout = "fr") +
   geom_edge_link(color = "white") +
   geom_node_point(aes(size = size, colour = colour), alpha = 0.5) +
   scale_size_continuous(range = c(0.1, 5)) + 
   scale_colour_manual(values = category_colors) +
   theme_graph()+
-  theme(legend.text = element_text(size = 10),  # Increase legend text size
+  theme(legend.text = element_text(size = 10),  
         legend.title = element_text(size = 12))+ 
   labs(color = "Shop category", size = "Range of products")
 ggsave("plots/plot5.png", plot = gplot, width = 19.2, height = 9.92, units = "cm", dpi = 300)
